@@ -2,84 +2,47 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { usePathname } from "next/navigation"
-import clsx from "clsx"
 
 const navItems = [
-  { name: "Beranda", href: "/" },
-  { name: "Menu", href: "/menu" },
-  { name: "Tentang Kami", href: "/tentang-kami" },
-  { name: "Kontak", href: "/kontak" },
+  { name: "Beranda", href: "#beranda" },
+  { name: "Daftar Menu", href: "#kategori" },
+  { name: "Kontak", href: "#kontak" },
 ]
 
 export default function Navbar() {
-  const pathname = usePathname()
-
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#7b1a36]/95 backdrop-blur">
-      <div className="container mx-auto flex h-20 items-center justify-between px-4">
-
-        {/* LOGO */}
-        <Link href="/" className="flex items-center">
+    <header className="w-full bg-[#7B1A36] sticky top-0 z-50">
+      <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
+        
+        {/* Logo */}
+        <Link href="#beranda" className="flex items-center gap-3">
           <Image
-            src="/images/PAWON.png"
-            alt="Pawon Logo"
-            width={100}
-            height={100}
+            src="/images/1.png"
+            alt="Pawon Ragil"
+            width={42}
+            height={42}
             priority
-            className="object-contain"
           />
+          <span className="text-white font-extrabold text-lg tracking-wide">
+            PAWON RAGIL
+          </span>
         </Link>
 
-        {/* NAVIGATION */}
-        <nav className="hidden md:flex items-center gap-10">
-          {navItems.map((item) => {
-            const active = pathname === item.href
-
-            return (
+        {/* Menu */}
+        <ul className="flex items-center gap-8">
+          {navItems.map((item) => (
+            <li key={item.name}>
               <Link
-                key={item.name}
                 href={item.href}
-                className={clsx(
-                  "relative text-sm font-medium text-white/80 transition-all duration-300 hover:text-white",
-                  active && "text-white"
-                )}
+                className="text-white text-sm font-medium transition hover:opacity-80"
               >
                 {item.name}
-
-                {/* underline animation */}
-                <span
-                  className={clsx(
-                    "absolute -bottom-2 left-0 h-[2px] w-full bg-white transition-all duration-300",
-                    active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                  )}
-                />
               </Link>
-            )
-          })}
-        </nav>
+            </li>
+          ))}
+        </ul>
 
-        {/* LOGIN BUTTON */}
-        <Button
-          variant="ghost"
-          className="
-            rounded-full 
-            border border-white/20 
-            px-6 
-            text-sm 
-            font-medium 
-            text-white 
-            backdrop-blur 
-            transition-all 
-            duration-300 
-            hover:bg-white 
-            hover:text-[#7b1a36]
-          "
-        >
-          Login
-        </Button>
-      </div>
+      </nav>
     </header>
   )
 }

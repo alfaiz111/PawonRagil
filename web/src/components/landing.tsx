@@ -37,20 +37,25 @@ export default function Landing() {
           </p>
 
           <button
-            className="
-              bg-[#7B1A36]
-              text-white
-              px-6
-              py-3
-              rounded-lg
-              font-semibold
-              transition
-              hover:bg-white
-              hover:text-[#7B1A36]
-            "
-          >
-            Lihat Menu
-          </button>
+          onClick={() => {
+            const kategoriSection = document.getElementById("kategori");
+            kategoriSection?.scrollIntoView({ behavior: "smooth" });
+          }}
+          className="
+            bg-[#7B1A36]
+            text-white
+            px-6
+            py-3
+            rounded-lg
+            font-semibold
+            transition
+            hover:bg-white
+            hover:text-[#7B1A36]
+          "
+        >
+          Lihat Menu
+        </button>
+
         </div>
 
         {/* Right Image */}

@@ -31,7 +31,7 @@ const categories = [
 
 export default function KategoriMenu() {
   return (
-    <section className="py-20 bg-white">
+    <section id="kategori" className="py-20 bg-white">
       <div className="container mx-auto px-6">
         {/* Heading */}
         <div className="text-center mb-14">
