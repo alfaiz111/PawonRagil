@@ -2,7 +2,8 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import AuthModal from "./authmodal"
+import { useRouter } from "next/navigation"
+import { ShoppingCart } from "lucide-react" // pastikan sudah install lucide-react
 
 const navItems = [
   { name: "Beranda", href: "#beranda" },
@@ -11,6 +12,8 @@ const navItems = [
 ]
 
 export default function Navbar() {
+  const router = useRouter()
+
   return (
     <header className="w-full bg-[#7B1A36] sticky top-0 z-50">
       <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
@@ -43,8 +46,19 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Auth */}
-        <AuthModal />
+        {/* Keranjang */}
+        <button
+          className="relative text-white hover:opacity-80"
+          onClick={() => router.push("/keranjang")}
+        >
+          <ShoppingCart size={24} />
+          {/* Badge jumlah item */}
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+            {typeof window !== "undefined"
+              ? JSON.parse(localStorage.getItem("keranjang") || "[]").length
+              : 0}
+          </span>
+        </button>
 
       </nav>
     </header>

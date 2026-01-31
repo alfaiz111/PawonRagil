@@ -25,9 +25,8 @@ type Menu = {
 export default function KategoriMenu() {
   const { kategoris, loading, error } = useKategori()
   const [menu, setMenu] = useState<Menu[]>([])
-  const [selectedKategori, setSelectedKategori] = useState<string | null>(null)
-  const [popupOpen, setPopupOpen] = useState(false)
   const [loadingMenu, setLoadingMenu] = useState(false)
+  const [jumlahMap, setJumlahMap] = useState<Record<string, number>>({})
 
   // Fetch semua menu
   const fetchMenu = async () => {
@@ -48,10 +47,22 @@ export default function KategoriMenu() {
     fetchMenu()
   }, [])
 
-  // Filter menu berdasarkan kategori yang diklik
-  const filteredMenu = selectedKategori
-    ? menu.filter((m) => m.kategoriId === selectedKategori)
-    : []
+  // Update jumlah menu
+  const updateJumlah = (menuId: string, delta: number) => {
+    setJumlahMap((prev) => ({
+      ...prev,
+      [menuId]: Math.max(1, (prev[menuId] || 1) + delta),
+    }))
+  }
+
+  // Masukkan menu ke keranjang
+  const addToCart = (menuItem: Menu) => {
+    const jumlah = jumlahMap[menuItem.id] || 1
+    const keranjang = JSON.parse(localStorage.getItem("keranjang") || "[]")
+    keranjang.push({ ...menuItem, jumlah })
+    localStorage.setItem("keranjang", JSON.stringify(keranjang))
+    alert(`${menuItem.nama} berhasil ditambahkan ke keranjang!`)
+  }
 
   if (loading) {
     return (
@@ -76,79 +87,52 @@ export default function KategoriMenu() {
   return (
     <section id="kategori" className="py-20 bg-white">
       <div className="container mx-auto px-6">
-        {/* Heading */}
         <div className="text-center mb-14">
           <h2 className="text-3xl font-extrabold text-[#7B1A36] mb-3">
             Kategori Menu
           </h2>
-          <p className="text-[#7B1A36]/80 max-w-xl mx-auto">
-            Kumpulan berbagai pilihan menu makanan dan minuman yang tersedia
-            untuk dinikmati.
+          <p className="text-[#7B1A36]/80 max-w-xl mx-auto pb-0">
+            Kumpulan berbagai pilihan menu makanan dan minuman yang tersedia untuk dinikmati.
           </p>
         </div>
 
-        {/* Cards Slider */}
-        <div className="relative overflow-x-auto overflow-y-visible pb-6 scroll-smooth">
-          <div className="flex gap-6 pt-10 min-w-max">
-            {kategoris.map((item) => (
-              <Dialog key={item.id} open={popupOpen && selectedKategori === item.id} onOpenChange={setPopupOpen}>
+        <div className="flex gap-6 overflow-x-auto pb-6 px-6 pt-0">
+          {kategoris.map((kategori) => {
+            const filteredMenu = menu.filter((m) => m.kategoriId === kategori.id)
+
+            return (
+              <Dialog key={kategori.id}>
                 <DialogTrigger asChild>
-                  <div
-                    className="
-                      relative
-                      w-[calc(25vw-1rem)]
-                      min-w-[250px]
-                      max-w-[300px]
-                      bg-white
-                      border
-                      border-pink-200
-                      rounded-2xl
-                      pt-15
-                      pb-6
-                      px-4
-                      text-center
-                      hover:shadow-lg
-                      transition
-                      flex
-                      flex-col
-                      justify-between
-                      cursor-pointer
-                      overflow-visible
-                    "
-                    onClick={() => {
-                      setSelectedKategori(item.id)
-                      setPopupOpen(true)
-                    }}
-                  >
-                    <div className="absolute -top-20 left-1/2 -translate-x-1/2 z-10 w-44 h-44">
-                      <Image
-                        src={item.gambar || "/images/placeholder.png"}
-                        alt={item.nama}
-                        width={176}
-                        height={176}
-                        className="object-contain"
-                      />
-                    </div>
-                    <div className="flex-1 mt-16">
-                      <h3 className="text-lg font-bold text-[#7B1A36] mb-2 break-words">
-                        {item.nama}
-                      </h3>
-                      <p className="text-sm text-pink-700 mb-4 break-words line-clamp-3">
-                        {item.deskripsi || "Kategori menu lezat"}
-                      </p>
-                    </div>
-                    <Button className="bg-[#2F6BFF] text-white px-5 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition">
-                      Lihat Kategori
+                <div className="relative flex flex-col items-center">
+                  {/* Gambar timbul di atas card */}
+                  <div className="mb-[-64px] z-5 w-44 h-44 pt-0">
+                    <Image
+                      src={kategori.gambar || "/images/placeholder.png"}
+                      alt={kategori.nama}
+                      width={176}
+                      height={176}
+                      className="object-contain"
+                    />
+                  </div>
+
+                  {/* Card */}
+                  <div className="w-[350px] bg-white border border-pink-200 rounded-2xl cursor-pointer hover:shadow-lg transition flex flex-col items-center pt-15 pb-16 px-4 py-0">
+                    {/* Judul dan deskripsi */}
+                    <h3 className="text-lg font-bold text-[#7B1A36] mt-4">{kategori.nama}</h3>
+                    <p className="text-sm text-pink-700 line-clamp-2 text-center mt-1">
+                      {kategori.deskripsi || "Kategori menu lezat"}
+                    </p>
+
+                    {/* Tombol */}
+                    <Button className="mt-4 bg-[#2F6BFF] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition">
+                      Lihat Menu
                     </Button>
                   </div>
+                </div>
                 </DialogTrigger>
-
-                {/* Dialog Content */}
                 <DialogContent className="max-w-3xl">
                   <DialogHeader>
-                    <DialogTitle className="text-[#7B1A36]">
-                      Menu: {item.nama}
-                    </DialogTitle>
+                    <DialogTitle className="text-[#7B1A36]">{kategori.nama}</DialogTitle>
                   </DialogHeader>
 
                   {loadingMenu ? (
@@ -156,31 +140,59 @@ export default function KategoriMenu() {
                   ) : filteredMenu.length === 0 ? (
                     <p>Tidak ada menu di kategori ini.</p>
                   ) : (
-                    <div className="grid md:grid-cols-2 gap-4 mt-4">
-                      {filteredMenu.map((m) => (
-                        <div
-                          key={m.id}
-                          className="border rounded-xl p-4 flex gap-4 items-center"
-                        >
-                          <div className="w-24 h-24 relative flex-shrink-0">
-                            <Image
-                              src={m.gambar || "/images/placeholder.png"}
-                              alt={m.nama}
-                              fill
-                              className="object-cover rounded-lg"
-                            />
+                    <div className="grid md:grid-cols-2 gap-6 mt-4">
+                      {filteredMenu.map((m) => {
+                        const jumlah = jumlahMap[m.id] || 1
+                        const totalHarga = m.harga * jumlah
+                        return (
+                          <div
+                            key={m.id}
+                            className="border rounded-2xl p-4 flex flex-col gap-3 shadow-sm hover:shadow-md transition"
+                          >
+                            <div className="relative w-full h-40 md:h-48">
+                              <Image
+                                src={m.gambar || "/images/placeholder.png"}
+                                alt={m.nama}
+                                fill
+                                className="object-cover rounded-xl"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1">
+                              <h4 className="font-bold text-[#7B1A36] text-lg">{m.nama}</h4>
+                              <p className="text-sm text-muted-foreground line-clamp-3">{m.deskripsi}</p>
+                              <p className="font-semibold text-[#7B1A36] mt-1">
+                                Rp {m.harga.toLocaleString()}
+                              </p>
+                            </div>
+
+                            <div className="flex items-center gap-2 mt-2">
+                              <button
+                                className="px-3 py-1 bg-gray-200 rounded-lg"
+                                onClick={() => updateJumlah(m.id, -1)}
+                              >
+                                -
+                              </button>
+                              <span className="font-semibold">{jumlah}</span>
+                              <button
+                                className="px-3 py-1 bg-gray-200 rounded-lg"
+                                onClick={() => updateJumlah(m.id, 1)}
+                              >
+                                +
+                              </button>
+                              <span className="ml-auto font-semibold">
+                                Total: Rp {totalHarga.toLocaleString()}
+                              </span>
+                            </div>
+
+                            <Button
+                              className="mt-3 bg-[#7B1A36] text-white w-full"
+                              onClick={() => addToCart(m)}
+                            >
+                              Masukkan Keranjang
+                            </Button>
                           </div>
-                          <div className="flex-1 text-left">
-                            <h4 className="font-bold text-[#7B1A36]">{m.nama}</h4>
-                            <p className="text-sm text-muted-foreground line-clamp-2">
-                              {m.deskripsi}
-                            </p>
-                            <p className="font-semibold text-[#7B1A36] mt-2">
-                              Rp {m.harga.toLocaleString()}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
+                        )
+                      })}
                     </div>
                   )}
 
@@ -189,8 +201,8 @@ export default function KategoriMenu() {
                   </DialogClose>
                 </DialogContent>
               </Dialog>
-            ))}
-          </div>
+            )
+          })}
         </div>
       </div>
     </section>
