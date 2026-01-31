@@ -105,7 +105,7 @@ export default function KategoriMenu() {
                 <DialogTrigger asChild>
                 <div className="relative flex flex-col items-center">
                   {/* Gambar timbul di atas card */}
-                  <div className="mb-[-64px] z-5 w-44 h-44 pt-0">
+                  <div className="mb-[-64px] z-5 w-44 h-44">
                     <Image
                       src={kategori.gambar || "/images/placeholder.png"}
                       alt={kategori.nama}
