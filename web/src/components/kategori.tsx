@@ -42,19 +42,20 @@ export default function KategoriMenu() {
 
         {/* Cards Slider */}
         <div className="relative overflow-x-auto overflow-y-visible pb-6 scroll-smooth">
-          <div className="flex gap-6 pt-20">
+          <div className="flex gap-6 pt-10 min-w-max">
             {kategoris.map((item) => (
               <div
                 key={item.id}
                 className="
                   relative
+                  w-[calc(25vw-1rem)]
                   min-w-[250px]
-                  max-w-[250px]
+                  max-w-[300px]
                   bg-white
                   border
                   border-pink-200
                   rounded-2xl
-                  pt-20
+                  pt-15  /* tambah padding atas untuk gambar lebih besar */
                   pb-6
                   px-4
                   text-center
@@ -66,19 +67,19 @@ export default function KategoriMenu() {
                   overflow-visible
                 "
               >
-                {/* Gambar timbul tanpa lingkaran */}
-                <div className="absolute -top-16 left-1/2 -translate-x-1/2 z-10 w-36 h-36">
+                {/* Gambar timbul lebih besar */}
+                <div className="absolute -top-20 left-1/2 -translate-x-1/2 z-10 w-44 h-44">
                   <Image
                     src={item.gambar || "/images/placeholder.png"}
                     alt={item.nama}
-                    width={144}
-                    height={144}
+                    width={176}
+                    height={176}
                     className="object-contain"
                   />
                 </div>
 
                 {/* Konten kartu */}
-                <div className="flex-1 mt-20">
+                <div className="flex-1 mt-16">
                   <h3 className="text-lg font-bold text-[#7B1A36] mb-2 break-words">
                     {item.nama}
                   </h3>
