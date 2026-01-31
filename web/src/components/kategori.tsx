@@ -1,35 +1,31 @@
 "use client"
 
 import Image from "next/image"
-
-const categories = [
-  {
-    title: "Aneka Nasi",
-    description:
-      "Beragam pilihan hidangan berbahan dasar nasi dengan cita rasa khas Nusantara, disajikan lengkap dengan lauk dan sambal pilihan.",
-    image: "/images/2.png",
-  },
-  {
-    title: "Aneka Mie",
-    description:
-      "Olahan mie dengan berbagai varian rasa, mulai dari gurih, pedas, hingga manis, cocok untuk dinikmati kapan saja.",
-    image: "/images/3.png",
-  },
-  {
-    title: "Aneka Sate",
-    description:
-      "Sajian sate lezat dari pilihan daging terbaik yang dibakar sempurna dan disajikan dengan bumbu khas yang menggugah selera.",
-    image: "/images/4.png",
-  },
-  {
-    title: "Aneka Minuman",
-    description:
-      "Pilihan minuman segar dan hangat yang pas untuk menemani hidangan utama, dari minuman tradisional hingga kekinian.",
-    image: "/images/5.png",
-  },
-]
+import { useKategori } from "@/hooks/useApi"
 
 export default function KategoriMenu() {
+  const { kategoris, loading, error } = useKategori()
+
+  if (loading) {
+    return (
+      <section id="kategori" className="py-20 bg-white">
+        <div className="container mx-auto px-6 text-center">
+          <p className="text-[#7B1A36]">Memuat kategori...</p>
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section id="kategori" className="py-20 bg-white">
+        <div className="container mx-auto px-6 text-center">
+          <p className="text-red-600">Error: {error}</p>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section id="kategori" className="py-20 bg-white">
       <div className="container mx-auto px-6">
@@ -46,62 +42,70 @@ export default function KategoriMenu() {
 
         {/* Cards Slider */}
         <div className="relative overflow-x-auto overflow-y-visible pb-6 scroll-smooth">
-        <div className="flex gap-8 pt-10">
-        {categories.map((item, index) => (
-        <div
-            key={index}
-            className="
-            relative
-            min-w-[280px]
-            bg-white
-            border
-            border-pink-200
-            rounded-2xl
-            pt-20
-            px-6
-            pb-8
-            text-center
-            hover:shadow-lg
-            transition
-            "
-        >
-            {/* Image Overlap (NO background) */}
-            <div className="absolute -top-20 left-1/2 -translate-x-1/2">
-            <Image
-                src={item.image}
-                alt={item.title}
-                width={200}
-                height={200}
-                className="object-contain"
-            />
-            </div>
+          <div className="flex gap-6 pt-20">
+            {kategoris.map((item) => (
+              <div
+                key={item.id}
+                className="
+                  relative
+                  min-w-[250px]
+                  max-w-[250px]
+                  bg-white
+                  border
+                  border-pink-200
+                  rounded-2xl
+                  pt-20
+                  pb-6
+                  px-4
+                  text-center
+                  hover:shadow-lg
+                  transition
+                  flex
+                  flex-col
+                  justify-between
+                  overflow-visible
+                "
+              >
+                {/* Gambar timbul tanpa lingkaran */}
+                <div className="absolute -top-16 left-1/2 -translate-x-1/2 z-10 w-36 h-36">
+                  <Image
+                    src={item.gambar || "/images/placeholder.png"}
+                    alt={item.nama}
+                    width={144}
+                    height={144}
+                    className="object-contain"
+                  />
+                </div>
 
-            <h3 className="text-xl font-bold text-[#7B1A36] mb-3">
-            {item.title}
-            </h3>
+                {/* Konten kartu */}
+                <div className="flex-1 mt-20">
+                  <h3 className="text-lg font-bold text-[#7B1A36] mb-2 break-words">
+                    {item.nama}
+                  </h3>
+                  <p className="text-sm text-pink-700 mb-4 break-words line-clamp-3">
+                    {item.deskripsi || "Kategori menu lezat"}
+                  </p>
+                </div>
 
-            <p className="text-sm text-pink-700 mb-6">
-            {item.description}
-            </p>
-
-            <button
-            className="
-                bg-[#2F6BFF]
-                text-white
-                px-5
-                py-2.5
-                rounded-lg
-                text-sm
-                font-semibold
-                hover:opacity-90
-                transition
-            "
-            >
-            Lihat Kategori
-            </button>
-        </div>
-        ))}
-        </div>
+                {/* Tombol */}
+                <button
+                  className="
+                    bg-[#2F6BFF]
+                    text-white
+                    px-5
+                    py-2
+                    rounded-lg
+                    text-sm
+                    font-semibold
+                    hover:opacity-90
+                    transition
+                  "
+                >
+                  Lihat Kategori
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

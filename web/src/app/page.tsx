@@ -3,16 +3,20 @@
 import dynamic from "next/dynamic";
 import LandingPage from "../components/landing";
 import Kategori from "../components/kategori";
+import MenuList from "../components/menulist";
 import Kontak from "../components/kontak";
-// import Footer from "../components/footer";
+import Navbar from "../components/navbar";
+import Footer from "../components/footer";
 export default function Home() {
   return (
     <div className="relative bg-black">
       <main>
+        <Navbar />
         <LandingPage />
         <Kategori />
+        <MenuList />
         <Kontak />
-        {/* <Footer /> */}
+        <Footer />
       </main>
     </div>
   );
