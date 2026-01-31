@@ -14,7 +14,7 @@ export default function Home() {
         <Navbar />
         <LandingPage />
         <Kategori />
-        <MenuList />
+        {/* <MenuList /> */}
         <Kontak />
         <Footer />
       </main>
